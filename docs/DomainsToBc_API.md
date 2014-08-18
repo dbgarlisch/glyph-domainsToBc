@@ -12,10 +12,10 @@ To source this script add the following lines to your script:
 See the script `test/test01.glf` for an example.
 
 ### Table of Contents
-* [Namespace pw::DomainsToBc](#namespace-pwthicken2d)
-* [pw::DomainsToBc Library Docs](#pwthicken2d-library-docs)
-* [pw::DomainsToBc Library Usage Examples](#pwthicken2d-library-usage-examples)
-    * [Thickening a 2D Grid for the COBALT Solver](#thickening-a-2d-grid-for-the-cobalt-solver)
+* [Namespace pw::DomainsToBc](#namespace-pwdomainstobc)
+* [pw::DomainsToBc Library Docs](#pwdomainstobc-library-docs)
+* [pw::DomainsToBc Library Usage Examples](#pwdomainstobc-library-usage-examples)
+    * [Create a unique BC for Each Domain](#create-a-unique-bc-for-each-domain)
 * [Disclaimer](#disclaimer)
 
 
@@ -165,7 +165,7 @@ Thickens a 2D grid into an extruded 3D grid.
     # GUID values will start at 100
     pw::DomainsToBc::setFirstGUID 100
 
-    # Used for xx when a domain name does not end in "-nn" id.
+    # Used for %EntNameId% when a domain name does not end in "-nn" id.
     pw::DomainsToBc::setDefaultEntNameId "X"
 
     # Force all domains to get new BCs
@@ -174,19 +174,23 @@ Thickens a 2D grid into an extruded 3D grid.
     # Set default NC naming pattern
     pw::DomainsToBc::setDefaultPattern "bc_%EntNameBase%-%GUID%"
 
-    # Do not use same BC on both sides of a connection
+    # Do NOT use same BC on both sides of a connection
     pw::DomainsToBc::setSplitCnxnBc 1
 
     # Do NOT apply BCs to free entities
     pw::DomainsToBc::setBcPhysicalType free ""
 
-    # Set the BC physical type used for free entities
+    # Set the BC physical type used for boundary entities
     pw::DomainsToBc::setBcPhysicalType boundary "Wall"
 
-    # Set the BC physical type used for free entities
+    # Set the BC physical type used for connection entities
     pw::DomainsToBc::setBcPhysicalType connection "Pressure Drop"
 
     # Set the BC naming pattern used for connection entities
+    #   Given MyDom-3 as a connection between MyBlk-1 and MyBlk-5, The two, split
+    #   BC names will be something like:
+    #     "bc_MyDom:MyBlk-14" and "bc_MyDom:MyBlk-15"
+    #
     pw::DomainsToBc::setBcPattern connection "bc_%EntNameBase%:%VolNameBase%-%GUID%"
 
     pw::DomainsToBc::createAndApply [pw::Grid getAll -type pw::Domain]
